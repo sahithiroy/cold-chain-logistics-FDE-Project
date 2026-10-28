@@ -1,0 +1,77 @@
+Step 1: The business
+Imagine a company called "FreshMove Logistics." It runs refrigerated trucks (reefer trucks) carrying things that spoil if they get too warm:
+
+💉 vaccines
+🥬 fresh vegetables and fruit
+🐟 fish and meat
+💊 medicines
+Each truck has a temperature sensor and GPS. Every hour the truck sends data such as: "I'm at this location, the cargo is at 6°C, the risk is high, the delay chance is 80%."
+
+All of this data is saved in an old company database (SQL Server), built many years ago.
+
+Step 2: The problem
+At night, a dispatcher (someone monitoring all the trucks) gets worried and wants to know:
+
+"Are any trucks near Los Angeles getting too warm? Is the temperature against our safety rules? What should I do?"
+
+To answer that today, the dispatcher has to:
+
+Open the old database. The data is hard to read, with column names like IOT_TEMP_VAL_C and CGO_COND_CD, and they don't know SQL.
+Check the weather separately on another website.
+Search the safety rule documents (SOPs, PDF files): "What's the allowed temperature for vegetables? Who do I call?"
+Put it all together mentally and make a decision.
+⏱ This takes 15–30 minutes. Meanwhile, the vaccines may spoil. 💸
+
+The problem in one line:
+
+Important information is scattered across an old database, weather websites, and PDF documents, so people can't make fast decisions when cargo is at risk.
+
+Step 3: What we're building
+We're building an AI assistant (chatbot) for the dispatcher, like ChatGPT but connected to the company's own data.
+
+The dispatcher simply types:
+
+"Any trucks near Los Angeles too warm? Does it break our rules?"
+
+and the AI does all the work by itself:
+
+
+Dispatcher asks a question
+        │
+        ▼
+   🤖 AI Assistant (the "brain")
+        │
+        ├──► 1. Looks in the truck database   → "Truck #12 near LA is at 9°C"
+        ├──► 2. Checks the weather            → "LA is 35°C today, heatwave"
+        ├──► 3. Reads the safety rules (SOP)  → "Vegetables must stay 2–8°C.
+        │                                        Above 8°C = Tier 1 emergency"
+        ▼
+   Answer in about 5 seconds:
+   "⚠️ Truck #12 is at 9°C, above the 8°C limit. There's a heatwave in LA.
+    This is a Tier 1 breach. Inform your team lead within 15 minutes."
+15–30 minutes → about 5 seconds. That's the value.
+
+Step 4: What each phase is (simply)
+Phase	Simple meaning	Real-life comparison
+0. Load data	Put the truck data into the old database	Setting up the company's old filing cabinet
+1. Safety rules (RAG)	Teach the AI to read and search the safety documents	Giving the assistant the rulebook
+2. Security	Let the AI only read a clean copy of the data, never change or delete it	Giving an intern a photocopy, not the original files
+3. AI agent	Build the brain that decides "should I check the database? the weather? the rules?"	The assistant who knows which drawer to open
+4. Audit log	Record everything the AI did and why	A CCTV camera so managers can check later
+5. Website (UI)	A simple screen with chat, map, and alerts	The dashboard the dispatcher uses
+6. Deploy	Put it on a cloud server (AWS) so anyone in the company can use it	Opening the shop to customers
+Step 5: Why it's called an "FDE" project
+An AI FDE is the person a company sends to a customer to say:
+
+"Your data is messy and old? No problem. I'll connect AI to it safely and solve your real problem."
+
+This project practices exactly that:
+
+✅ dealing with old, messy systems (the legacy database)
+✅ keeping it safe (read-only access, audit logs)
+✅ using AI to solve a real business problem (spoiled cargo, slow decisions)
+✅ delivering something people can actually use (a website on the cloud)
+Summary
+Problem: Trucks carry cargo that spoils when warm. The information needed to act is scattered in an old database, weather sites, and rule documents, so decisions are slow.
+
+Solution: An AI assistant that pulls all of it together and tells the dispatcher what's wrong and what to do, in seconds.
